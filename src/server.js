@@ -2,6 +2,7 @@ import express from 'express'
 import listEndpoints from 'express-list-endpoints'
 import cors from 'cors'
 import mongoose from 'mongoose'
+import usersRouter from "./services/Users/index.js"
 
 
 import { badRequestErrorHandler, notFoundErrorHandler, catchAllErrorHandler } from './services/errorHandlers.js'
@@ -19,6 +20,7 @@ server.use(express.json())
 // R O U T E R S     H E R E 
 
 // server.use("/authors", authorRouter) example 
+server.use("/users", usersRouter)
 
 
 // M I D D L E W A R E S   H E R E
