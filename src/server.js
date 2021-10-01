@@ -4,6 +4,8 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 import usersRouter from "./services/Users/index.js"
 import acomRouter from './services/Accommodation/index.js'
+import googleStrategy from './auth/oauth.js'
+import passport from 'passport'
 
 
 import { badRequestErrorHandler, notFoundErrorHandler, catchAllErrorHandler } from './services/errorHandlers.js'
@@ -12,9 +14,10 @@ import { badRequestErrorHandler, notFoundErrorHandler, catchAllErrorHandler } fr
 
 const server = express()
 
-
+passport.use('google', googleStrategy)
 server.use(cors())
 server.use(express.json())
+server.use(passport.initialize())
 
 
 

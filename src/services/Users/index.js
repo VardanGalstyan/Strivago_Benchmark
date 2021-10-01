@@ -3,6 +3,7 @@ import UserModel from "./schema.js"
 import { generateJWToken } from "../../auth/tools.js"
 import { JWTAuthMiddleWear } from "../../auth/token.js"
 import createHttpError from "http-errors"
+import passport from 'passport'
 
 const usersRouter = express.Router()
 
@@ -37,6 +38,17 @@ usersRouter.post("/login", async (req, res, next) => {
     }
   } catch (error) {
     next(error)
+  }
+})
+
+usersRouter.get("/googleLogin", passport.authenticate('google', { scope: ["profile", "email"] }))
+
+
+usersRouter.get("/googleRedirect", passport.authenticate('google'), async (req, res, next) => {
+  try {
+    res.redirect(`http://localhost:3000/register?accessToken=${req.user.tokens}`)
+  } catch (error) {
+    next(error);
   }
 })
 
