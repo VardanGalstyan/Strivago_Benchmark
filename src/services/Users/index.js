@@ -1,5 +1,6 @@
 import express from "express"
 import UserModel from "./schema.js"
+import AcomModel from "../Accommodation/schema.js"
 import { generateJWToken } from "../../auth/tools.js"
 import { JWTAuthMiddleWear } from "../../auth/token.js"
 import createHttpError from "http-errors"
@@ -89,6 +90,22 @@ usersRouter.get("/",
     try {
       const users = await UserModel.find()
       res.send(users)
+    } catch (error) {
+      next(error)
+    }
+  })
+
+  usersRouter.get("/me/accomodation", JWTAuthMiddleWear, async (req, res, next) => {
+    try {
+        console.log(req.user._id)
+    const Accom = await AcomModel.find({ host: req.user._id})
+    .populate('host')
+    .exec(function(err, posts, count){  
+     res.send(posts)
+  });
+
+
+    
     } catch (error) {
       next(error)
     }

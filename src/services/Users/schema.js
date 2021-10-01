@@ -6,9 +6,10 @@ const { Schema, model } = mongoose
 const UserSchema = new Schema(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true },
-    password: { type: String, required: true },
+    email: { type: String, required: false },
+    password: { type: String, required: false },
     role: { type: String, required: true, enum: ["Host", "Guest"], default: "Guest" },
+    googleId: { type: String, required: false }
   },
   { timestamps: true }
 )
@@ -46,6 +47,7 @@ UserSchema.statics.checkCredentials = async function (email, plainPW) {
   // 1. Find the user by email
 
   const user = await this.findOne({ email }) // "this" represents the model
+//   console.log(user)
 
   if (user) {
     // 2. If the user is found we are going to compare plainPW with the hashed one
