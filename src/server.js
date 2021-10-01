@@ -3,10 +3,10 @@ import listEndpoints from 'express-list-endpoints'
 import cors from 'cors'
 import mongoose from 'mongoose'
 import usersRouter from "./services/Users/index.js"
+import acomRouter from './services/Accommodation/index.js'
 
 
 import { badRequestErrorHandler, notFoundErrorHandler, catchAllErrorHandler } from './services/errorHandlers.js'
-import acomRouter from './services/Accommodation/accommodatoin.js'
 
 
 

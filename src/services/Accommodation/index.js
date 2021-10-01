@@ -1,9 +1,11 @@
 import { Router } from 'express'
 import AcomModel from './schema.js'
 import createHttpError from 'http-errors'
+import { JWTAuthMiddleWear } from '../../auth/token.js'
 
 const acomRouter = Router()
 
+// G E N E R A L   U S E
 
 acomRouter.get('/', async (req, res, next) => {
     try {
@@ -28,11 +30,12 @@ acomRouter.get('/:id', async (req, res, next) => {
     }
 })
 
+// H O S T S   O N L Y
 
-acomRouter.post('/', async (req, res, next) => {
+acomRouter.post('/', JWTAuthMiddleWear, async (req, res, next) => {
 
     try {
-        const newData = new AcomModel(req.body)
+        const newData = new AcomModel({ ...req.body, host: req.user._id })
         await newData.save()
         res.status(201).send(newData)
     } catch (error) {
@@ -41,7 +44,7 @@ acomRouter.post('/', async (req, res, next) => {
 })
 
 
-acomRouter.put('/:id', async (req, res, next) => {
+acomRouter.put('/:id', JWTAuthMiddleWear, async (req, res, next) => {
     try {
         const updateData = await AcomModel.findByIdAndUpdate(req.params.id, req.body, {
             new: true
@@ -58,7 +61,7 @@ acomRouter.put('/:id', async (req, res, next) => {
 })
 
 
-acomRouter.delete('/:id', async (req, res, next) => {
+acomRouter.delete('/:id', JWTAuthMiddleWear, async (req, res, next) => {
     try {
         const deleteData = await AcomModel.findByIdAndDelete(req.params.id)
         if (deleteData) {

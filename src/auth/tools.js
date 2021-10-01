@@ -21,7 +21,7 @@ export const verifyJWT = (token) =>
         })
     );
 
-export const generateJWToken = async (author) => {
-    const accessToken = await generateJWT({ _id: author._id })
+export const generateJWToken = async (user) => {
+    const accessToken = await generateJWT({ _id: user._id })
     return accessToken
 }
