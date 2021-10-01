@@ -1,5 +1,6 @@
 import express from "express"
 import UserModel from "./schema.js"
+import AcomModel from '../Accommodation/schema.js'
 import { generateJWToken } from "../../auth/tools.js"
 import { JWTAuthMiddleWear } from "../../auth/token.js"
 import createHttpError from "http-errors"
@@ -61,6 +62,17 @@ usersRouter.get("/me", JWTAuthMiddleWear, async (req, res, next) => {
   }
 })
 
+usersRouter.get("/me/accommodation", JWTAuthMiddleWear, async (req, res, next) => {
+
+  try {
+    const data = await AcomModel.find({})
+    const userAccommodation = data.filter(value => value.host.toString().includes(req.user._id ))
+    res.send(userAccommodation)
+  } catch (error) {
+    next(error)
+  }
+})
+
 usersRouter.put("/me", JWTAuthMiddleWear, async (req, res, next) => {
   try {
     const updateUser = await UserModel.findByIdAndUpdate(req.user._id, req.body,
@@ -72,39 +84,14 @@ usersRouter.put("/me", JWTAuthMiddleWear, async (req, res, next) => {
   }
 })
 
-usersRouter.delete("/me",
-  // JWTAuthMiddleware, 
-  async (req, res, next) => {
-    try {
-      await req.user.deleteOne()
-      res.send()
-    } catch (error) {
-      next(error)
-    }
-  })
-
-usersRouter.get("/:userId",
-  // JWTAuthMiddleware, 
-  // adminOnlyMiddleware,
-  async (req, res, next) => {
-    try {
-      const user = await UserModel.findById(req.params.userId)
-      res.send(user)
-    } catch (error) {
-      next(error)
-    }
-  })
-
-usersRouter.get("/",
-  // JWTAuthMiddleware, 
-  async (req, res, next) => {
-    try {
-      const users = await UserModel.find()
-      res.send(users)
-    } catch (error) {
-      next(error)
-    }
-  })
+usersRouter.delete("/me", async (req, res, next) => {
+  try {
+    await req.user.deleteOne()
+    res.status(204).send(`The User with ID #${req.params.id} has been successfully deleted!`)
+  } catch (error) {
+    next(createHttpError(404, `User with id ${req.params.id} has not been found!`))
+  }
+})
 
 
 
