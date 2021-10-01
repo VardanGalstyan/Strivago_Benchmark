@@ -1,10 +1,7 @@
 import express from "express"
 import UserModel from "./schema.js"
-// import { basicAuthMiddleware } from "../../auth/basic.js"
-// import { JWTAuthMiddleware } from "../../auth/token.js"
-// import { adminOnlyMiddleware } from "../../auth/admin.js"
-// import { JWTAuthenticate } from "../../auth/tools.js"
 import { generateJWToken } from "../../auth/tools.js"
+import { JWTAuthMiddleWear } from "../../auth/token.js"
 import createHttpError from "http-errors"
 
 const usersRouter = express.Router()
@@ -44,40 +41,24 @@ usersRouter.post("/login", async (req, res, next) => {
 })
 
 
-usersRouter.get("/",
-  // JWTAuthMiddleware, 
-  async (req, res, next) => {
-    try {
-      const users = await UserModel.find()
-      res.send(users)
-    } catch (error) {
-      next(error)
-    }
-  })
+usersRouter.get("/me", JWTAuthMiddleWear, async (req, res, next) => {
+  try {
+    res.send(req.user)
+  } catch (error) {
+    next(error)
+  }
+})
 
-usersRouter.get("/me",
-  // JWTAuthMiddleware, 
-  async (req, res, next) => {
-    // JWTAuthMiddleware is going also to modify req object and attach the "logged in" user to it --> req.user
-    try {
-      res.send(req.user)
-    } catch (error) {
-      next(error)
-    }
-  })
-
-usersRouter.put("/me",
-  // JWTAuthMiddleware, 
-  async (req, res, next) => {
-    try {
-      req.user.name = "John"
-
-      await req.user.save()
-      res.send()
-    } catch (error) {
-      next(error)
-    }
-  })
+usersRouter.put("/me", JWTAuthMiddleWear, async (req, res, next) => {
+  try {
+    const updateUser = await UserModel.findByIdAndUpdate(req.user._id, req.body,
+      { new: true }
+    );
+    res.send(updateUser)
+  } catch (error) {
+    next(error)
+  }
+})
 
 usersRouter.delete("/me",
   // JWTAuthMiddleware, 
@@ -97,6 +78,17 @@ usersRouter.get("/:userId",
     try {
       const user = await UserModel.findById(req.params.userId)
       res.send(user)
+    } catch (error) {
+      next(error)
+    }
+  })
+
+usersRouter.get("/",
+  // JWTAuthMiddleware, 
+  async (req, res, next) => {
+    try {
+      const users = await UserModel.find()
+      res.send(users)
     } catch (error) {
       next(error)
     }
