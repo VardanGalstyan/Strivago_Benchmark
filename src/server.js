@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 
 
 import { badRequestErrorHandler, notFoundErrorHandler, catchAllErrorHandler } from './services/errorHandlers.js'
+import acomRouter from './services/Accommodation/accommodatoin.js'
 
 
 
@@ -18,7 +19,7 @@ server.use(express.json())
 
 // R O U T E R S     H E R E 
 
-// server.use("/authors", authorRouter) example 
+server.use("/accommodation", acomRouter) 
 
 
 // M I D D L E W A R E S   H E R E
