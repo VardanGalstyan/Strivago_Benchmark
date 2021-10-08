@@ -9,7 +9,7 @@ const acomRouter = Router()
 
 acomRouter.get('/', async (req, res, next) => {
     try {
-        const data = await AcomModel.find({})
+        const data = await AcomModel.find({}).populate('host').exec()
         res.send(data)
     } catch (error) {
         console.log(error);

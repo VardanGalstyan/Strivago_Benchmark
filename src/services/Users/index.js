@@ -93,6 +93,15 @@ usersRouter.delete("/me", async (req, res, next) => {
   }
 })
 
+usersRouter.get('/', async (req, res, next) => {
+  try {
+      const data = await UserModel.find({})
+      res.send(data)
+  } catch (error) {
+      console.log(error);
+  }
+})
+
 
 
 export default usersRouter

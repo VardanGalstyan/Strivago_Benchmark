@@ -25,7 +25,7 @@ const googleStrategy = new GoogleStrategy({
             const createdUser = new UserModel(newUser)
             const savedUser = await createdUser.save()
             const tokens = await generateJWToken(savedUser)
-            passportNext({ user: savedUser, tokens })
+            passportNext(null, { user: savedUser, tokens })
 
         }
 
